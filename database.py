@@ -1,9 +1,11 @@
-
 import sqlite3
+import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
-DATABASE = "database.db"
-
+if os.environ.get("VERCEL"):
+    DATABASE = "/tmp/database.db"
+else:
+    DATABASE = "database.db"
 
 def get_db_connection():
     conn = sqlite3.connect(DATABASE)
