@@ -1,0 +1,1830 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Analysis | Rainwater Harvesting Analyzer</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Project CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body {
+            margin: 0;
+            background: #f4f8f6;
+            font-family: Arial, sans-serif;
+            color: #26362e;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .analysis-navbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e1ebe5;
+        }
+
+        .analysis-navbar-inner {
+            max-width: 1100px;
+            min-height: 68px;
+            margin: auto;
+            padding: 0 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .analysis-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            color: #146c43;
+            text-decoration: none;
+
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .analysis-brand-icon {
+            width: 36px;
+            height: 36px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e8f5ef;
+            border-radius: 9px;
+        }
+
+        .analysis-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .dashboard-link,
+        .logout-link-analysis {
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .dashboard-link {
+            color: #68756f;
+        }
+
+        .logout-link-analysis {
+            color: #198754;
+        }
+
+        .dashboard-link:hover,
+        .logout-link-analysis:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= MAIN ================= */
+
+        .analysis-container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 45px 20px 60px;
+        }
+
+        /* ================= HEADER ================= */
+
+        .analysis-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 35px;
+        }
+
+        .analysis-label {
+            display: inline-block;
+
+            color: #198754;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.3px;
+
+            margin-bottom: 9px;
+        }
+
+        .analysis-header h1 {
+            margin: 0 0 12px;
+
+            color: #202b25;
+            font-size: 34px;
+            font-weight: 700;
+        }
+
+        .analysis-header p {
+            margin: 0;
+
+            color: #718079;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* ================= CARDS ================= */
+
+        .analysis-card {
+            background: #ffffff;
+
+            border: 1px solid #e1ebe5;
+            border-radius: 14px;
+
+            padding: 27px;
+
+            margin-bottom: 20px;
+
+            box-shadow: 0 3px 12px rgba(30, 70, 50, 0.04);
+        }
+
+        .card-heading {
+            margin-bottom: 22px;
+        }
+
+        .card-heading h2 {
+            margin: 0 0 6px;
+
+            color: #293930;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .card-heading p {
+            margin: 0;
+
+            color: #7a8780;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* ================= PROPERTY ================= */
+
+        .property-card-header {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            margin-bottom: 23px;
+        }
+
+        .property-card-icon {
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #eaf5ef;
+            border-radius: 10px;
+        }
+
+        .property-card-header h2 {
+            margin: 0 0 3px;
+
+            color: #293930;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .property-card-header p {
+            margin: 0;
+
+            color: #7a8780;
+            font-size: 12px;
+        }
+
+        .property-item {
+            padding: 13px 15px;
+
+            background: #f8faf9;
+
+            border: 1px solid #edf1ef;
+            border-radius: 10px;
+
+            height: 100%;
+        }
+
+        .property-label {
+            color: #7b8781;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            margin-bottom: 6px;
+        }
+
+        .property-value {
+            color: #293930;
+
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* ================= METRICS ================= */
+
+        .metric-box {
+            height: 100%;
+
+            background: #f8faf9;
+
+            border: 1px solid #e5eee9;
+            border-radius: 11px;
+
+            padding: 22px 16px;
+
+            text-align: center;
+        }
+
+        .metric-value {
+            color: #198754;
+
+            font-size: 26px;
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+        .metric-label {
+            color: #74817b;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* ================= HARVESTING ================= */
+
+        .harvesting-box {
+            height: 100%;
+
+            background: #eef8f3;
+
+            border: 1px solid #dcefe5;
+            border-radius: 11px;
+
+            padding: 26px 20px;
+
+            text-align: center;
+        }
+
+        .harvesting-value {
+            color: #146c43;
+
+            font-size: 30px;
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+        .harvesting-label {
+            color: #718079;
+
+            font-size: 12px;
+        }
+
+        /* ================= STORAGE ================= */
+
+        .storage-box {
+            background: #f4f8ff;
+
+            border: 1px solid #e1e9f5;
+            border-radius: 12px;
+
+            padding: 30px;
+
+            text-align: center;
+        }
+
+        .storage-value {
+            color: #315fba;
+
+            font-size: 40px;
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+        .storage-label {
+            color: #71809a;
+
+            font-size: 13px;
+
+            margin-bottom: 22px;
+        }
+
+        .storage-details {
+            max-width: 500px;
+
+            margin: auto;
+
+            padding-top: 17px;
+
+            border-top: 1px solid #dfe6f0;
+        }
+
+        .storage-details p {
+            margin: 7px 0;
+
+            color: #66758a;
+            font-size: 13px;
+        }
+
+        .storage-details strong {
+            color: #34445a;
+        }
+
+        /* ================= SCORE ================= */
+
+        .score-wrapper {
+            text-align: center;
+
+            padding: 5px 0 8px;
+        }
+
+        .score {
+            color: #198754;
+
+            font-size: 50px;
+            font-weight: 700;
+        }
+
+        .score-label {
+            color: #7b8781;
+
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .badge-result {
+            display: inline-block;
+
+            margin-top: 14px;
+
+            padding: 7px 18px;
+
+            border-radius: 20px;
+
+            background: #e8f5ef;
+            color: #146c43;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* ================= RECOMMENDATION ================= */
+
+        .recommendation {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+
+            background: #f2f8f5;
+
+            border: 1px solid #dfeee6;
+            border-left: 4px solid #198754;
+
+            padding: 21px;
+
+            border-radius: 10px;
+        }
+
+        .recommendation-icon {
+            min-width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #ffffff;
+            border-radius: 9px;
+        }
+
+        .recommendation h4 {
+            color: #293930;
+
+            margin: 2px 0 7px;
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .recommendation p {
+            color: #687770;
+
+            margin: 0;
+
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        /* ================= CHARTS ================= */
+
+        .chart-description {
+            color: #74817b;
+
+            font-size: 13px;
+            line-height: 1.6;
+
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            position: relative;
+
+            width: 100%;
+            height: 330px;
+        }
+
+        /* ================= METHODOLOGY ================= */
+
+        .methodology-intro {
+            color: #718079;
+
+            font-size: 13px;
+            line-height: 1.7;
+
+            margin-bottom: 25px;
+        }
+
+        .methodology-grid {
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+
+            gap: 13px;
+        }
+
+        .methodology-step {
+            padding: 17px;
+
+            background: #f8faf9;
+
+            border: 1px solid #e7efeb;
+            border-radius: 10px;
+        }
+
+        .methodology-step strong {
+            display: block;
+
+            color: #198754;
+
+            font-size: 13px;
+
+            margin-bottom: 7px;
+        }
+
+        .methodology-step p {
+            color: #718079;
+
+            font-size: 12px;
+            line-height: 1.6;
+
+            margin: 0;
+        }
+
+        /* ================= ACTION ================= */
+
+        .action-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 23px 25px;
+
+            background: #eaf5ef;
+
+            border-radius: 13px;
+
+            margin-top: 5px;
+        }
+
+        .action-text h3 {
+            margin: 0 0 5px;
+
+            color: #24513c;
+
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .action-text p {
+            margin: 0;
+
+            color: #687970;
+
+            font-size: 12px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+
+            background: #198754;
+            color: #ffffff;
+
+            padding: 11px 17px;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .back-button:hover {
+            background: #146c43;
+            color: #ffffff;
+        }
+
+        /* ================= LOADING ================= */
+
+        .loading {
+            text-align: center;
+
+            padding: 25px;
+
+            color: #7a8780;
+
+            font-size: 13px;
+        }
+
+        /* ================= ERROR ================= */
+
+        .error {
+            background: #fff3f3;
+
+            color: #a33a3a;
+
+            border: 1px solid #f1d0d0;
+            border-radius: 9px;
+
+            padding: 17px;
+
+            font-size: 13px;
+        }
+
+        .error small {
+            display: block;
+
+            margin-top: 7px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 768px) {
+
+            .analysis-container {
+                padding: 30px 15px 45px;
+            }
+
+            .analysis-header h1 {
+                font-size: 29px;
+            }
+
+            .analysis-card {
+                padding: 21px;
+            }
+
+            .chart-container {
+                height: 290px;
+            }
+
+            .methodology-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-area {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        }
+
+        @media (max-width: 520px) {
+
+            .analysis-navbar-inner {
+                padding: 0 15px;
+            }
+
+            .analysis-brand {
+                font-size: 16px;
+            }
+
+            .dashboard-link {
+                display: none;
+            }
+
+            .analysis-container {
+                padding: 25px 12px 40px;
+            }
+
+            .analysis-header h1 {
+                font-size: 26px;
+            }
+
+            .analysis-header p {
+                font-size: 13px;
+            }
+
+            .analysis-card {
+                padding: 18px;
+            }
+
+            .chart-container {
+                height: 260px;
+            }
+
+            .recommendation {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="analysis-navbar">
+
+    <div class="analysis-navbar-inner">
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="analysis-brand"
+        >
+
+            <span class="analysis-brand-icon">
+                💧
+            </span>
+
+            <span>
+                Rainwater Analyzer
+            </span>
+
+        </a>
+
+
+        <div class="analysis-nav-actions">
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="dashboard-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{{ url_for('logout') }}"
+                class="logout-link-analysis"
+            >
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="analysis-container">
+
+
+    <!-- HEADER -->
+
+    <section class="analysis-header">
+
+        <span class="analysis-label">
+            PERSONALIZED ANALYSIS
+        </span>
+
+        <h1>
+            Rainwater Harvesting Analysis
+        </h1>
+
+        <p>
+            A data-driven analysis of your property's rainfall,
+            harvesting potential, storage requirement and feasibility.
+        </p>
+
+    </section>
+
+
+    <!-- PROPERTY DETAILS -->
+
+    <section class="analysis-card">
+
+        <div class="property-card-header">
+
+            <div class="property-card-icon">
+                🏠
+            </div>
+
+            <div>
+
+                <h2>
+                    Your Property
+                </h2>
+
+                <p>
+                    Details used for your rainwater analysis
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+
+            <div class="col-md-4">
+
+                <div class="property-item">
+
+                    <div class="property-label">
+                        Location
+                    </div>
+
+                    <div class="property-value">
+                        {{ property_data.location }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="property-item">
+
+                    <div class="property-label">
+                        Roof Area
+                    </div>
+
+                    <div class="property-value">
+                        {{ property_data.roof_area }} m²
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="property-item">
+
+                    <div class="property-label">
+                        Roof Type
+                    </div>
+
+                    <div class="property-value">
+                        {{ property_data.roof_type }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="property-item">
+
+                    <div class="property-label">
+                        Number of People
+                    </div>
+
+                    <div class="property-value">
+                        {{ property_data.people }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="property-item">
+
+                    <div class="property-label">
+                        Daily Water Requirement
+                    </div>
+
+                    <div class="property-value">
+                        {{ property_data.daily_water }} L/day
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="property-item">
+
+                    <div class="property-label">
+                        Purpose
+                    </div>
+
+                    <div class="property-value">
+                        {{ property_data.purpose }}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- RAINFALL -->
+
+    <section class="analysis-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Rainfall Analysis
+            </h2>
+
+            <p>
+                Historical rainfall and estimated future rainfall.
+            </p>
+
+        </div>
+
+
+        <div id="rainfallResult">
+
+            <div class="loading">
+                Analyzing historical rainfall data...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- HARVESTING -->
+
+    <section class="analysis-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Rainwater Harvesting Potential
+            </h2>
+
+            <p>
+                Estimated amount of rainwater that can be collected
+                from your rooftop.
+            </p>
+
+        </div>
+
+
+        <div id="harvestingResult">
+
+            <div class="loading">
+                Calculating harvesting potential...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- STORAGE -->
+
+    <section class="analysis-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Storage Recommendation
+            </h2>
+
+            <p>
+                Recommended tank capacity based on water availability
+                and requirement.
+            </p>
+
+        </div>
+
+
+        <div id="storageResult">
+
+            <div class="loading">
+                Calculating recommended storage...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FEASIBILITY -->
+
+    <section class="analysis-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Feasibility Score
+            </h2>
+
+            <p>
+                Comparison between estimated harvesting potential
+                and monthly water requirement.
+            </p>
+
+        </div>
+
+
+        <div id="scoreResult">
+
+            <div class="loading">
+                Calculating feasibility score...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RECOMMENDATION -->
+
+    <section class="analysis-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Personalized Recommendation
+            </h2>
+
+            <p>
+                Recommendation generated from your analysis results.
+            </p>
+
+        </div>
+
+
+        <div id="recommendationResult">
+
+            <div class="loading">
+                Preparing recommendation...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RAINFALL CHART -->
+
+    <section class="analysis-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Monthly Rainfall Pattern
+            </h2>
+
+            <p class="chart-description">
+                Historical average monthly rainfall for the selected
+                location.
+            </p>
+
+        </div>
+
+
+        <div class="chart-container">
+
+            <canvas id="rainfallChart"></canvas>
+
+        </div>
+
+    </section>
+
+
+    <!-- HARVESTING CHART -->
+
+    <section class="analysis-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Monthly Harvesting Potential
+            </h2>
+
+            <p class="chart-description">
+                Estimated amount of rainwater that can be collected
+                during each month.
+            </p>
+
+        </div>
+
+
+        <div class="chart-container">
+
+            <canvas id="harvestingChart"></canvas>
+
+        </div>
+
+    </section>
+
+
+    <!-- METHODOLOGY -->
+
+    <section class="analysis-card">
+
+        <div class="card-heading">
+
+            <h2>
+                Data Science Methodology
+            </h2>
+
+            <p>
+                Main steps used by the analyzer.
+            </p>
+
+        </div>
+
+
+        <p class="methodology-intro">
+
+            The system uses historical rainfall data together with
+            user property information to estimate rainwater
+            harvesting potential.
+
+        </p>
+
+
+        <div class="methodology-grid">
+
+
+            <div class="methodology-step">
+
+                <strong>
+                    01 · User Input
+                </strong>
+
+                <p>
+                    Location, roof area, roof type, people,
+                    daily water requirement and purpose are collected.
+                </p>
+
+            </div>
+
+
+            <div class="methodology-step">
+
+                <strong>
+                    02 · Data Cleaning
+                </strong>
+
+                <p>
+                    Invalid dates and invalid rainfall values are
+                    removed before analysis.
+                </p>
+
+            </div>
+
+
+            <div class="methodology-step">
+
+                <strong>
+                    03 · Location Selection
+                </strong>
+
+                <p>
+                    The rainfall dataset location nearest to the
+                    selected city is identified.
+                </p>
+
+            </div>
+
+
+            <div class="methodology-step">
+
+                <strong>
+                    04 · Rainfall Analysis
+                </strong>
+
+                <p>
+                    Historical annual and monthly rainfall patterns
+                    are calculated.
+                </p>
+
+            </div>
+
+
+            <div class="methodology-step">
+
+                <strong>
+                    05 · Rainfall Prediction
+                </strong>
+
+                <p>
+                    A Random Forest regression model estimates
+                    rainfall for the prediction year.
+                </p>
+
+            </div>
+
+
+            <div class="methodology-step">
+
+                <strong>
+                    06 · Harvesting Calculation
+                </strong>
+
+                <p>
+                    Rainfall, roof area and runoff coefficient are
+                    used to estimate harvestable water.
+                </p>
+
+            </div>
+
+
+            <div class="methodology-step">
+
+                <strong>
+                    07 · Storage Recommendation
+                </strong>
+
+                <p>
+                    Water availability and monthly requirement are
+                    used to recommend a practical tank size.
+                </p>
+
+            </div>
+
+
+            <div class="methodology-step">
+
+                <strong>
+                    08 · Feasibility
+                </strong>
+
+                <p>
+                    Harvesting potential is compared with monthly
+                    water demand to generate a score.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- MODIFY -->
+
+    <section class="action-area">
+
+        <div class="action-text">
+
+            <h3>
+                Want to change your property details?
+            </h3>
+
+            <p>
+                Modify your inputs and generate the analysis again.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('property_details') }}"
+            class="back-button"
+        >
+            ← Modify Property
+        </a>
+
+    </section>
+
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+];
+
+
+fetch("/api/analyze")
+
+.then(function(response) {
+
+    if (!response.ok) {
+        throw new Error("Analysis request failed.");
+    }
+
+    return response.json();
+
+})
+
+
+.then(function(data) {
+
+    console.log("Analysis data:", data);
+
+
+    /* ================= SERVER ERROR ================= */
+
+    if (data.error) {
+
+        throw new Error(
+            data.details || data.error
+        );
+
+    }
+
+
+    /* ================= RAINFALL RESULT ================= */
+
+    document.getElementById("rainfallResult").innerHTML = `
+
+        <div class="row g-3">
+
+            <div class="col-md-4">
+
+                <div class="metric-box">
+
+                    <div class="metric-value">
+                        ${Number(data.average_rainfall).toFixed(2)} mm
+                    </div>
+
+                    <div class="metric-label">
+                        Historical Average Rainfall
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="metric-box">
+
+                    <div class="metric-value">
+                        ${Number(data.predicted_rainfall).toFixed(2)} mm
+                    </div>
+
+                    <div class="metric-label">
+                        Estimated Future Rainfall
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="metric-box">
+
+                    <div class="metric-value">
+                        ${data.prediction_year}
+                    </div>
+
+                    <div class="metric-label">
+                        Prediction Year
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* ================= HARVESTING RESULT ================= */
+
+    document.getElementById("harvestingResult").innerHTML = `
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+
+                <div class="harvesting-box">
+
+                    <div class="harvesting-value">
+                        ${Number(data.annual_harvesting).toLocaleString(
+                            undefined,
+                            { maximumFractionDigits: 2 }
+                        )} L
+                    </div>
+
+                    <div class="harvesting-label">
+                        Estimated Annual Harvesting Potential
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <div class="harvesting-box">
+
+                    <div class="harvesting-value">
+                        ${Number(data.monthly_harvesting).toLocaleString(
+                            undefined,
+                            { maximumFractionDigits: 2 }
+                        )} L
+                    </div>
+
+                    <div class="harvesting-label">
+                        Average Monthly Harvesting Potential
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* ================= STORAGE RESULT ================= */
+
+    document.getElementById("storageResult").innerHTML = `
+
+        <div class="storage-box">
+
+            <div class="storage-value">
+                ${Number(data.recommended_tank).toLocaleString()} L
+            </div>
+
+            <div class="storage-label">
+                Recommended Storage Capacity
+            </div>
+
+            <div class="storage-details">
+
+                <p>
+                    Daily water requirement:
+                    <strong>
+                        ${Number(data.daily_requirement).toFixed(2)} L/day
+                    </strong>
+                </p>
+
+                <p>
+                    Roof runoff coefficient:
+                    <strong>
+                        ${Number(data.runoff_coefficient).toFixed(2)}
+                    </strong>
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* ================= SCORE ================= */
+
+    document.getElementById("scoreResult").innerHTML = `
+
+        <div class="score-wrapper">
+
+            <div class="score">
+                ${data.score}/100
+            </div>
+
+            <div class="score-label">
+                Rainwater harvesting feasibility score
+            </div>
+
+            <span class="badge-result">
+                ${data.feasibility}
+            </span>
+
+        </div>
+
+    `;
+
+
+    /* ================= RECOMMENDATION ================= */
+
+    document.getElementById("recommendationResult").innerHTML = `
+
+        <div class="recommendation">
+
+            <div class="recommendation-icon">
+                💧
+            </div>
+
+            <div>
+
+                <h4>
+                    Your Personalized Recommendation
+                </h4>
+
+                <p>
+                    ${data.recommendation}
+                </p>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* =====================================================
+       MONTHLY RAINFALL DATA
+       ===================================================== */
+
+    let monthlyRainfall = data.monthly_rainfall || [];
+
+
+    if (!Array.isArray(monthlyRainfall)) {
+
+        monthlyRainfall = [];
+
+    }
+
+
+    monthlyRainfall.sort(function(a, b) {
+
+        return Number(a.month) - Number(b.month);
+
+    });
+
+
+    const rainfallLabels = monthlyRainfall.map(function(item) {
+
+        return monthNames[Number(item.month) - 1];
+
+    });
+
+
+    const rainfallValues = monthlyRainfall.map(function(item) {
+
+        return Number(item.rainfall);
+
+    });
+
+
+    /* ================= RAINFALL CHART ================= */
+
+    const rainfallCanvas =
+        document.getElementById("rainfallChart");
+
+
+    if (
+        rainfallCanvas &&
+        rainfallValues.length > 0
+    ) {
+
+        new Chart(
+            rainfallCanvas,
+            {
+                type: "bar",
+
+                data: {
+
+                    labels: rainfallLabels,
+
+                    datasets: [
+                        {
+                            label: "Average Rainfall (mm)",
+
+                            data: rainfallValues,
+
+                            borderWidth: 1,
+
+                            borderRadius: 5
+                        }
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            title: {
+                                display: true,
+                                text: "Rainfall (mm)"
+                            },
+
+                            grid: {
+                                color: "#edf2ef"
+                            }
+
+                        },
+
+                        x: {
+
+                            title: {
+                                display: true,
+                                text: "Month"
+                            },
+
+                            grid: {
+                                display: false
+                            }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+                            display: true
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       MONTHLY HARVESTING DATA
+       ===================================================== */
+
+    let monthlyHarvesting =
+        data.monthly_harvesting_data || [];
+
+
+    if (!Array.isArray(monthlyHarvesting)) {
+
+        monthlyHarvesting = [];
+
+    }
+
+
+    monthlyHarvesting.sort(function(a, b) {
+
+        return Number(a.month) - Number(b.month);
+
+    });
+
+
+    const harvestingLabels =
+        monthlyHarvesting.map(function(item) {
+
+            return monthNames[Number(item.month) - 1];
+
+        });
+
+
+    const harvestingValues =
+        monthlyHarvesting.map(function(item) {
+
+            return Number(item.harvesting);
+
+        });
+
+
+    /* ================= HARVESTING CHART ================= */
+
+    const harvestingCanvas =
+        document.getElementById("harvestingChart");
+
+
+    if (
+        harvestingCanvas &&
+        harvestingValues.length > 0
+    ) {
+
+        new Chart(
+            harvestingCanvas,
+            {
+                type: "bar",
+
+                data: {
+
+                    labels: harvestingLabels,
+
+                    datasets: [
+                        {
+                            label: "Harvesting Potential (L)",
+
+                            data: harvestingValues,
+
+                            borderWidth: 1,
+
+                            borderRadius: 5
+                        }
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            title: {
+                                display: true,
+                                text: "Harvesting Potential (L)"
+                            },
+
+                            grid: {
+                                color: "#edf2ef"
+                            }
+
+                        },
+
+                        x: {
+
+                            title: {
+                                display: true,
+                                text: "Month"
+                            },
+
+                            grid: {
+                                display: false
+                            }
+
+                        }
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+                            display: true
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+
+})
+
+
+.catch(function(error) {
+
+    console.error(
+        "Rainfall analysis error:",
+        error
+    );
+
+
+    document.getElementById(
+        "rainfallResult"
+    ).innerHTML = `
+
+        <div class="error">
+
+            <strong>
+                Unable to perform rainfall analysis.
+            </strong>
+
+            <small>
+                ${error.message}
+            </small>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "harvestingResult"
+    ).innerHTML = `
+
+        <div class="loading">
+            Harvesting analysis is unavailable.
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "storageResult"
+    ).innerHTML = `
+
+        <div class="loading">
+            Storage recommendation is unavailable.
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "scoreResult"
+    ).innerHTML = `
+
+        <div class="loading">
+            Feasibility score is unavailable.
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "recommendationResult"
+    ).innerHTML = `
+
+        <div class="loading">
+            Personalized recommendation is unavailable.
+        </div>
+
+    `;
+
+});
+
+</script>
+
+</body>
+
+</html>
+```

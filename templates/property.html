@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Property Details | Rainwater Harvesting Analyzer</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+
+<body class="property-page">
+
+
+<!-- =========================
+     NAVBAR
+     ========================= -->
+
+<header class="property-navbar">
+
+    <div class="property-navbar-inner">
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="property-brand"
+        >
+
+            <span class="property-brand-icon">
+                💧
+            </span>
+
+            <span>
+                Rainwater Analyzer
+            </span>
+
+        </a>
+
+
+        <a
+            href="{{ url_for('logout') }}"
+            class="property-logout"
+        >
+            Logout
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================
+     MAIN
+     ========================= -->
+
+<main class="property-main">
+
+
+    <!-- Page heading -->
+
+    <div class="property-heading">
+
+        <span class="property-label">
+            PROPERTY ANALYSIS
+        </span>
+
+        <h1>
+            Tell us about your property
+        </h1>
+
+        <p>
+            Enter a few details about your property.
+            We'll combine them with rainfall data to
+            estimate your harvesting potential.
+        </p>
+
+    </div>
+
+
+
+    <!-- Form -->
+
+    <form
+        method="POST"
+        class="property-form-modern"
+    >
+
+
+        <!-- =========================
+             LOCATION
+             ========================= -->
+
+        <section class="property-section">
+
+            <div class="section-icon">
+                📍
+            </div>
+
+            <div class="section-content">
+
+                <div class="form-section-heading">
+
+                    <h2>
+                        Location
+                    </h2>
+
+                    <p>
+                        Where is your property located?
+                    </p>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="location">
+                        City / Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="Example: Chennai"
+                        required
+                    >
+
+                    <small>
+                        Enter a supported Tamil Nadu city.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             ROOFTOP
+             ========================= -->
+
+        <section class="property-section">
+
+            <div class="section-icon">
+                🏠
+            </div>
+
+            <div class="section-content">
+
+                <div class="form-section-heading">
+
+                    <h2>
+                        Rooftop information
+                    </h2>
+
+                    <p>
+                        Tell us about the roof from which
+                        rainwater will be collected.
+                    </p>
+
+                </div>
+
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+
+                        <label for="roof_area">
+                            Roof area
+                        </label>
+
+                        <div class="input-with-unit">
+
+                            <input
+                                type="number"
+                                id="roof_area"
+                                name="roof_area"
+                                placeholder="120"
+                                min="1"
+                                step="0.01"
+                                required
+                            >
+
+                            <span>
+                                m²
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="roof_type">
+                            Roof type
+                        </label>
+
+                        <select
+                            id="roof_type"
+                            name="roof_type"
+                            required
+                        >
+
+                            <option value="">
+                                Select roof type
+                            </option>
+
+                            <option value="Concrete">
+                                RCC / Concrete
+                            </option>
+
+                            <option value="Metal">
+                                Metal
+                            </option>
+
+                            <option value="Tile">
+                                Tile
+                            </option>
+
+                            <option value="Asbestos">
+                                Asbestos
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             HOUSEHOLD
+             ========================= -->
+
+        <section class="property-section">
+
+            <div class="section-icon">
+                👨‍👩‍👧
+            </div>
+
+            <div class="section-content">
+
+                <div class="form-section-heading">
+
+                    <h2>
+                        Household information
+                    </h2>
+
+                    <p>
+                        Help us understand your expected
+                        water requirement.
+                    </p>
+
+                </div>
+
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+
+                        <label for="people">
+                            Number of people
+                        </label>
+
+                        <input
+                            type="number"
+                            id="people"
+                            name="people"
+                            placeholder="4"
+                            min="1"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="daily_water">
+                            Daily water requirement
+                        </label>
+
+                        <div class="input-with-unit">
+
+                            <input
+                                type="number"
+                                id="daily_water"
+                                name="daily_water"
+                                placeholder="500"
+                                min="1"
+                                step="0.1"
+                                required
+                            >
+
+                            <span>
+                                L/day
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             PURPOSE
+             ========================= -->
+
+        <section class="property-section">
+
+            <div class="section-icon">
+                🎯
+            </div>
+
+            <div class="section-content">
+
+                <div class="form-section-heading">
+
+                    <h2>
+                        Harvesting purpose
+                    </h2>
+
+                    <p>
+                        What will the harvested water mainly
+                        be used for?
+                    </p>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="purpose">
+                        Intended use
+                    </label>
+
+                    <select
+                        id="purpose"
+                        name="purpose"
+                        required
+                    >
+
+                        <option value="">
+                            Select purpose
+                        </option>
+
+                        <option value="Gardening">
+                            Gardening
+                        </option>
+
+                        <option value="Toilet">
+                            Toilet / Flushing
+                        </option>
+
+                        <option value="Cleaning">
+                            Cleaning
+                        </option>
+
+                        <option value="Domestic">
+                            Domestic Use
+                        </option>
+
+                        <option value="Multiple">
+                            Multiple Uses
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             SUBMIT
+             ========================= -->
+
+        <div class="form-submit">
+
+            <button
+                type="submit"
+                class="analyze-button-modern"
+            >
+                Analyze My Rainwater Potential
+                <span>→</span>
+            </button>
+
+            <p>
+                Your information will be used to generate
+                a personalized rainfall and harvesting analysis.
+            </p>
+
+        </div>
+
+
+    </form>
+
+</main>
+
+
+</body>
+</html>

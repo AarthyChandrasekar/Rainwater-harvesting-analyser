@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | Rainwater Harvesting Analyzer</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+
+<body class="auth-page">
+
+<div class="auth-container">
+
+    <div class="auth-card">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                💧
+            </div>
+
+            <div>
+                <h1>Rainwater Analyzer</h1>
+                <p>Harvesting Potential Analysis</p>
+            </div>
+
+        </div>
+
+
+        <div class="auth-heading">
+
+            <h2>Welcome back</h2>
+
+            <p>
+                Sign in to continue analyzing your
+                rainwater harvesting potential.
+            </p>
+
+        </div>
+
+
+        {% if error %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+
+        <form method="POST">
+
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="auth-button"
+            >
+                Login
+            </button>
+
+
+        </form>
+
+
+        <div class="divider">
+            <span>New to the analyzer?</span>
+        </div>
+
+
+        <p class="bottom-text">
+
+            Create an account to analyze your property.
+
+            <a href="{{ url_for('register') }}">
+                Register
+            </a>
+
+        </p>
+
+
+    </div>
+
+</div>
+
+</body>
+
+</html>s
